@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TON Mining</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f9fc;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+        .stats {
+            margin: 15px 0;
+            font-size: 18px;
+        }
+        .button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007aff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:active {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Toncoin_logo.svg/120px-Toncoin_logo.svg.png" class="logo" alt="TON Logo">
+        <div class="stats">
+            <p>💰 Баланс: <span id="balance">0.0000</span> TON</p>
+            <p>🔹 Скорость майнинга: <span id="rate">0.0005</span> TON/сек</p>
+        </div>
+        <button class="button" onclick="mine()">Майнить</button>
+        <button class="button" onclick="sendData()">Отправить данные в бота</button>
+        <button class="button" onclick="donate()">Увеличить скорость майнинга</button>
+    </div>
+
+    <script>
+        let balance = 0.0;  // Баланс пользователя
+        let miningRate = 0.0005;  // Скорость майнинга (по умолчанию)
+
+        // Функция майнинга
+        function mine() {
+            balance += miningRate;
+            document.getElementById("balance").innerText = balance.toFixed(4);
+        }
+
+        // Эмуляция автоматического майнинга
+        setInterval(() => {
+            balance += miningRate;
+            document.getElementById("balance").innerText = balance.toFixed(4);
+        }, 1000);
+
+        // Функция отправки данных в бота
+        function sendData() {
+            const data = JSON.stringify({
+                action: "update_balance",
+                balance: balance,
+                rate: miningRate
+            });
+            if (window.Telegram.WebApp) {
+                Telegram.WebApp.sendData(data);  // Отправка данных в бота
+            } else {
+                alert("Ошибка: Telegram WebApp не доступен!");
+            }
+        }
+
+        // Функция отправки запроса на донат
+        function donate() {
+            const data = JSON.stringify({
+                action: "donate",
+                amount: 0.1  // Пример фиксированной суммы
+            });
+            if (window.Telegram.WebApp) {
+                Telegram.WebApp.sendData(data);  // Отправка данных о донате в бота
+            } else {
+                alert("Ошибка: Telegram WebApp не доступен!");
+            }
+        }
+
+        // Инициализация Web App
+        if (window.Telegram.WebApp) {
+            Telegram.WebApp.ready();
+        }
+    </script>
+</body>
+</html>
